@@ -5,6 +5,7 @@ import java.util.Scanner;
  */
 
  // is this working 9:58pm
+ // test at 10:03
 public class entryPoint
 {
     static float totalOzComsumed = 0.0F;
