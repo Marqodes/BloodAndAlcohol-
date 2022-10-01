@@ -8,6 +8,7 @@ import java.util.Scanner;
  // test at 10:03
  // test at 10:05
  // test at 10:25
+ // test at 10:36
 public class entryPoint
 {
     static float totalOzComsumed = 0.0F;
