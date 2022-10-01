@@ -7,6 +7,7 @@ import java.util.Scanner;
  */
 public class entryPoint
 {
+    // testing pushing to github
     static float totalOzComsumed = 0.0F;
     static int numberOfDrinks = 0;
 
