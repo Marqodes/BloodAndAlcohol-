@@ -1,16 +1,15 @@
 import java.util.Scanner;
-
-
 /*
  * We should have a person class and a drink class, future updatesA
  * Maybe we save the drinks in an array
  */
 public class entryPoint
 {
-    // testing pushing to github
     static float totalOzComsumed = 0.0F;
     static int numberOfDrinks = 0;
 
+ 
+    static Person user = new Person();
     public static void main(String[] args)
     {
 
@@ -30,21 +29,30 @@ public class entryPoint
                 case 'c':
                     System.out.println("Under Construction....");
                     break;
+                case 's':
+                    // This will clear the screen
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+
+                    System.out.println(user);
+                    System.out.println("-------------------------------------");
+                    break;
+
             }
             
         } while(userInput.charAt(0) !=  'q');
     }
 
- // This is the intro page
     public static void printIntroScreen()
     {
         System.out.println("Welcome To hDai");
         System.out.println("(t) Track");
         System.out.println("(c) Calculate");
+        System.out.println("(s) Summary");
         System.out.println("(q) quit");
         System.out.print("Enter choice: ");
     }
-// This is the track option screen 
+
     public static void trackScreen()
     {
         // This will clear the screen
@@ -57,7 +65,6 @@ public class entryPoint
         float tempAlc = 0.0f;
 
         // every time this method is called it will add one to this variable
-        numberOfDrinks++;
 
         System.out.println("\tTracking Screen");
 
@@ -67,12 +74,18 @@ public class entryPoint
         System.out.print("- Enter Alcohol %:  ");
         tempAlc = in.nextFloat();
 
+        Beverage currentBeverage = new Beverage(tempAlc, tempOz);
+        user.beverageList.add(currentBeverage);
+        user.increaseDrinkCount();
+
         // This will clear the screen
         System.out.print("\033[H\033[2J");
         System.out.flush();
 
         // print confirmation
-        System.out.println("Drink #" + numberOfDrinks + " has been loged Vol: " + tempOz + " Alc: " + tempAlc);
+        System.out.println("Drink #" + user.getDrinkCount() + " has been loged Vol: " + currentBeverage.getFluidOz() + " Alc: " + currentBeverage.getAlcholPercentage());
         System.out.println("------------------------------------------------");
     }
+
+
 }
