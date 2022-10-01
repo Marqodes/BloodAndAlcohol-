@@ -3,6 +3,8 @@ import java.util.Scanner;
  * We should have a person class and a drink class, future updatesA
  * Maybe we save the drinks in an array
  */
+
+ // is this working 9:58pm
 public class entryPoint
 {
     static float totalOzComsumed = 0.0F;
