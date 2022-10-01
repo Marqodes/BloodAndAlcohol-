@@ -1,14 +1,5 @@
 import java.util.Scanner;
-/*
- * We should have a person class and a drink class, future updatesA
- * Maybe we save the drinks in an array
- */
 
- // is this working 9:58pm
- // test at 10:03
- // test at 10:05
- // test at 10:25
- // test at 10:36
 public class entryPoint
 {
     static float totalOzComsumed = 0.0F;
@@ -89,7 +80,7 @@ public class entryPoint
         System.out.flush();
 
         // print confirmation
-        System.out.println("Drink #" + user.getDrinkCount() + " has been loged Vol: " + currentBeverage.getFluidOz() + " Alc: " + currentBeverage.getAlcholPercentage());
+        System.out.println("Drink #" + user.getDrinkCount() + " has been loged Vol: " + currentBeverage.getFluidOz() + " Alc: " + currentBeverage.getAlcholPercentage() + "% At: " + currentBeverage.getTime());
         System.out.println("------------------------------------------------");
     }
 
