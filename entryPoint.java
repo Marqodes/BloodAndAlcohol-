@@ -59,12 +59,72 @@ public class entryPoint
         numberOfDrinks++;
 
         System.out.println("\tTracking Screen");
+        System.out.println("\t---------------");
 
-        System.out.print("- Enter Fluid Volume: ");
-        tempOz = in.nextFloat();
+        /*
+         * input validation for input of oz
+         * keeps looping until user enters a number and its between 1 and 128
+         */
+        do
+        {
+            System.out.print("- Enter Fluid Volume: ");
+            // this is like saying "while in.hasNextFloat != true"
+            while(!in.hasNextFloat())
+            {
+                System.out.println("Please enter a valid number between 1 and 128!");
+                System.out.print("- Enter Fluid Volume: ");
+                in.next();
+            }
 
-        System.out.print("- Enter Alcohol %:  ");
-        tempAlc = in.nextFloat();
+            tempOz = in.nextFloat();
+            if(tempOz <= 0 || tempOz > 128)
+            {
+                if(tempOz <= 0)
+                {
+                    System.out.println("**Come-on! It is not possible to drink that little...**");
+                    System.out.println("Please enter a valid number between 1 and 128!");
+                }
+                else
+                {
+                    System.out.println("**You need help! You drink over a gallon in one sitting??**");
+                    System.out.println("Please enter a valid number between 1 and 128!");
+                }
+            }
+
+        }while(tempOz <= 0 || tempOz > 128);
+
+
+        /*
+         * input validation for input of %
+         * keeps looping until user enters a number and its between 1 and 100
+         */
+        do
+        {
+            System.out.print("- Enter Alcohol %:  ");
+            // this is like saying "while in.hasNextFloat != true"
+            while(!in.hasNextFloat())
+            {
+                System.out.println("Please enter a valid number between 1 and 100!");
+                System.out.print("- Enter Alcohol: ");
+                in.next();
+            }
+
+            tempAlc = in.nextFloat();
+            if(tempAlc <= 0 || tempAlc > 100)
+            {
+                if(tempAlc <= 0)
+                {
+                    System.out.println("**You're drinking water...**");
+                    System.out.println("Please enter a valid number between 1 and 100!");
+                }
+                else
+                {
+                    System.out.println("**You must be drunk! No-way its over 100%!**");
+                    System.out.println("Please enter a valid number between 1 and 100!");
+                }
+            }
+
+        }while(tempAlc <= 0 || tempAlc > 100);
 
         // This will clear the screen
         System.out.print("\033[H\033[2J");
