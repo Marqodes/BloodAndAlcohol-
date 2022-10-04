@@ -1,6 +1,7 @@
 /* 
 	- MQv 0.5.0		Added trackScreen w/ input validation
 	- MMv 0.6.0		Added calcScreen w/ new variables including current time
+    - MMv 0.6.1     Changed age input, main menu, trackScreen() print confirmation
 */
 
 import java.util.Scanner;
@@ -35,15 +36,15 @@ public class entryPoint
 
             switch(userInput.charAt(0))
             {
-                case 't':
+                case 't': case 'T':
                     trackScreen();
                     break;
-                case 'c':
+                case 'c': case 'C':
                     calcScreen();
                     break;
             }
 
-        } while(userInput.charAt(0) !=  'q');
+        } while(userInput.charAt(0) !=  'q' && userInput.charAt(0) !=  'Q');
     }
 
 	// ::INTRO
@@ -156,7 +157,7 @@ public class entryPoint
         System.out.flush();
 
         // printScreen() confirmation
-        System.out.println("Drink #" + numberOfDrinks + " has been logged Vol: " + tempOz + " Alc: " + tempAlc + " Time: " + timeFormat.format(currentDate));
+        System.out.println("Drink #" + numberOfDrinks + " has been logged." + "\n\tVol: "  + tempOz +  "\n\tAlc: " + tempAlc + "\n\tTime: " + timeFormat.format(currentDate));
         System.out.println("------------------------------------------------");
     }
 
@@ -203,6 +204,36 @@ public class entryPoint
                 userGender = in.nextLine();    
             }
 
+        // ::AGE
+        do
+        {
+            System.out.print("- Enter your age: ");
+            // this is like saying "while in.hasNextInt != true"
+            while(!in.hasNextInt())
+            {
+                System.out.println("Please enter a valid number between 21 and 110!");
+                System.out.print("- Enter your age: ");
+                in.next();
+            }
+
+            userAge = in.nextInt();
+            if(userAge < 21 || userAge > 110)
+            {
+                if(userAge < 21)
+                {
+                    System.out.println("SORRY, YOU MUST BE 21 OR OLDER.");
+                    System.exit(0);                    
+                    //System.out.println("Please enter a valid age between 21 and 110!");
+                }
+                else
+                {
+                    System.out.println("-_-");
+                    //System.out.println("Please enter a valid number between 21 and 110!");
+                }
+            }
+
+        }while(userAge < 21 || userAge > 110);  
+
 		// ::WEIGHT
         do
         {
@@ -223,35 +254,6 @@ public class entryPoint
             }
 
         }while(userWeight < 80 || userWeight > 400);    
-
-		// ::AGE
-        do
-        {
-            System.out.print("- Enter your age: ");
-            // this is like saying "while in.hasNextInt != true"
-            while(!in.hasNextInt())
-            {
-                System.out.println("Please enter a valid number between 21 and 110!");
-                System.out.print("- Enter your age: ");
-                in.next();
-            }
-
-            userAge = in.nextInt();
-            if(userAge < 21 || userAge > 110)
-            {
-                if(userAge < 21)
-                {
-                    System.out.println(userAge + "? Did you mean 21?");
-                    //System.out.println("Please enter a valid age between 21 and 110!");
-                }
-                else
-                {
-                    System.out.println("-_-");
-                    //System.out.println("Please enter a valid number between 21 and 110!");
-                }
-            }
-
-        }while(userAge < 21 || userAge > 110);    
 
 		// ::FLUID VOLUME
         do
