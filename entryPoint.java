@@ -2,6 +2,7 @@
 	- MQv 0.5.0		Added trackScreen w/ input validation
 	- MMv 0.6.0		Added calcScreen w/ new variables including current time
     - MMv 0.6.1     Changed age input, main menu, trackScreen() print confirmation
+    - MMv 0.6.2     Changed name to first name only and gender to remove comma as valid input
 */
 
 import java.util.Scanner;
@@ -186,11 +187,12 @@ public class entryPoint
 
         //userName - checks for A-Z, a-z input only
 		// ::NAME
-        System.out.println("- Enter your name: ");
+        System.out.println("- Enter your first name: ");
         String userName = in.nextLine();
-            while(!userName.matches("[a-z A-Z]+"))
+        
+            while(!userName.matches("[a-zA-Z]+")) //TALK ABOUT THIS
             {
-                System.out.println("Please enter a valid name!");
+                System.out.println("Please enter your first name only with no spaces.");
                 userName = in.nextLine();
             }
 
@@ -198,7 +200,7 @@ public class entryPoint
 		// ::GENDER
         System.out.println("- Enter your gender (M or F): ");
         String userGender = in.nextLine();
-            while(!userGender.matches("[M,m,F,f]+"))
+            while(!userGender.matches("[MmFf]+")) //NO COMMA
             {
                 System.out.println("Please enter M or F!");
                 userGender = in.nextLine();    
