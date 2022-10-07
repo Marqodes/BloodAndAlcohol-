@@ -3,6 +3,8 @@
 	- MMv 0.6.0		Added calcScreen w/ new variables including current time
     - MMv 0.6.1     Changed age input, main menu, trackScreen() print confirmation
     - MMv 0.6.2     Changed name to first name only and gender to remove comma as valid input
+
+    - MQv 0.6.3     now the fluid oz and alc% print every line when you press enter
 */
 
 import java.util.Scanner;
@@ -80,80 +82,64 @@ public class entryPoint
         System.out.println("\tTracking Screen");
         System.out.println("\t---------------");
 
-        /*
-         * input validation for input of oz
-         * keeps looping until user enters a number and its between 1 and 128
-         */
 
 		// ::FLUID VOLUME
         do
         {
             System.out.print("- Enter Fluid Volume(oz): ");
+            String fluidS = in.nextLine();
 
-            // this is like saying "while in.hasNextFloat != true"
-            while(!in.hasNextFloat())
+            while(!fluidS.matches("[0-9]+"))
             {
-                System.out.println("Please enter a valid number between 1 and 128!");
                 System.out.print("- Enter Fluid Volume(oz): ");
-                in.next();
+                fluidS = in.nextLine();
             }
 
-            tempOz = in.nextFloat();
-
-            if(tempOz <= 0 || tempOz > 128)
+            float tempO = Float.parseFloat(fluidS);
+            if(tempO <= 0 || tempO > 128)
             {
-                if(tempOz <= 0)
+                if(tempO <= 0)
                 {
-                    System.out.println("**Come-on! It is not possible to drink that little...**");
                     System.out.println("Please enter a valid number between 1 and 128!");
                 }
                 else
                 {
-                    System.out.println("**You need help! You drink over a gallon in one sitting??**");
                     System.out.println("Please enter a valid number between 1 and 128!");
                 }
+
             }
-
-        }while(tempOz <= 0 || tempOz > 128);
-
-
-        /*
-         * input validation for input of %
-         * keeps looping until user enters a number and its between 1 and 100
-         */
+            tempOz = tempO;
+        }while( tempOz <= 0 || tempOz > 128);
 
 		// ::ALCOHOL %
         do
         {
+            
             System.out.print("- Enter Alcohol %:  ");
+            String percentS = in.nextLine();
 
-            // this is like saying "while in.hasNextFloat != true"
-            while(!in.hasNextFloat())
+            while(!percentS.matches("[0-9]+"))
             {
-                System.out.println("Please enter a valid number between 1 and 100!");
-                System.out.print("- Enter Alcohol: ");
-                in.next();
+                System.out.print("- Enter Alcohol %:  ");
+                percentS = in.nextLine();
             }
 
-            tempAlc = in.nextFloat();
-
-            if(tempAlc <= 0 || tempAlc > 100)
+            float tempA = Float.parseFloat(percentS);
+            if(tempA <= 0 || tempA > 100)
             {
                 if(tempAlc <= 0)
                 {
-                    System.out.println("**You're drinking water...**");
                     System.out.println("Please enter a valid number between 1 and 100!");
                 }
                 else
                 {
-                    System.out.println("**You must be drunk! No-way its over 100%!**");
                     System.out.println("Please enter a valid number between 1 and 100!");
                 }
             }
-
+            tempAlc = tempA;
         }while(tempAlc <= 0 || tempAlc > 100);
 
-        // This will clear the screen
+        // Clear screen
         System.out.print("\033[H\033[2J");
         System.out.flush();
 
@@ -325,4 +311,5 @@ public class entryPoint
         System.out.println( "Estimated BAC for " + userName + " is: TBA");
         System.out.println("------------------------------------------------");
     }
+
 }
