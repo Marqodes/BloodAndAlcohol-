@@ -5,6 +5,7 @@
     - MMv 0.6.2     Changed name to first name only and gender to remove comma as valid input
 
     - MQv 0.6.3     now the fluid oz and alc% print every line when you press enter
+    - MQv 0.6.4     Fixed the regex to allow decimals
 */
 
 import java.util.Scanner;
@@ -89,7 +90,7 @@ public class entryPoint
             System.out.print("- Enter Fluid Volume(oz): ");
             String fluidS = in.nextLine();
 
-            while(!fluidS.matches("[0-9]+"))
+            while(!fluidS.matches("[0-9]*.?[0-9]+"))
             {
                 System.out.print("- Enter Fluid Volume(oz): ");
                 fluidS = in.nextLine();
@@ -118,7 +119,7 @@ public class entryPoint
             System.out.print("- Enter Alcohol %:  ");
             String percentS = in.nextLine();
 
-            while(!percentS.matches("[0-9]+"))
+            while(!percentS.matches("[0-9]*.?[0-9]+"))
             {
                 System.out.print("- Enter Alcohol %:  ");
                 percentS = in.nextLine();
