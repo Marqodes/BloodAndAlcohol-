@@ -3,314 +3,398 @@
 	- MMv 0.6.0		Added calcScreen w/ new variables including current time
     - MMv 0.6.1     Changed age input, main menu, trackScreen() print confirmation
     - MMv 0.6.2     Changed name to first name only and gender to remove comma as valid input
-
     - MQv 0.6.3     now the fluid oz and alc% print every line when you press enter
     - MQv 0.6.4     Fixed the regex to allow decimals
+    - MMv 0.7.0     added height to calcScreen(), main menu crashing when no input returned fixed,
+                    cleaned up console with lots of flushes, timer for when logged, added timer to nearest quarter
 */
-
 import java.util.Scanner;
 import java.util.jar.Attributes.Name;
 import java.util.Date;
 import java.text.SimpleDateFormat;
-
-/*
+import java.time.*;
+import java.time.format.*;
+import java.time.temporal.*;
+ /*
  * We should have a person class and a drink class, future updatesA
  * Maybe we save the drinks in an array
- * Height input needed
  * Log with naming convention
  * History
  * Back feature
- * Enter only crashes program at intro screen
  */
-
 public class entryPoint
 {
-    static float totalOzComsumed = 0.0F;
     static int numberOfDrinks = 0;
-
+//main
     public static void main(String[] args)
     {
         Scanner in = new Scanner(System.in);
         String userInput;
-
-        do 
+        boolean x = false;
+        do
         {
             printIntroScreen();
-            userInput = in.nextLine();
-
-            switch(userInput.charAt(0))
-            {
-                case 't': case 'T':
-                    trackScreen();
-                    break;
-                case 'c': case 'C':
+            userInput = in.nextLine(); 
+            switch (userInput.toUpperCase()) {
+                case "T": 
+                    trackScreen();                   
+                    break;      
+                case "C":       
                     calcScreen();
                     break;
-            }
-
-        } while(userInput.charAt(0) !=  'q' && userInput.charAt(0) !=  'Q');
+                case "Q":
+                    System.exit(0);
+            }                    
+        }while(x==false);         
     }
-
-	// ::INTRO
+//printIntroScreen
     public static void printIntroScreen()
     {
-        System.out.println("Welcome To hDai");
+        flushScreen(); 
+        System.out.println("\tWelcome To hDai\n");
         System.out.println("(t) Track");
         System.out.println("(c) Calculate");
         System.out.println("(q) quit");
-        System.out.print("Enter choice: ");
+        System.out.print("\nEnter choice: ");
     }
-
-	// ::TRACKSCREEN 
+//flushScreen
+    public static void flushScreen()
+    {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+//getNearestHourQuarter
+    public static LocalTime getNearestHourQuarter(LocalTime datetime) 
+    {
+        int minutes = datetime.getMinute();
+        int mod = minutes % 15;
+        LocalTime newDatetime;
+        if (mod < 8) 
+        {
+            newDatetime = datetime.minusMinutes(mod);
+        }
+        else 
+        {
+            newDatetime = datetime.plusMinutes(15 - mod);
+        }
+        newDatetime = newDatetime.truncatedTo(ChronoUnit.MINUTES);
+        return newDatetime; 
+    }
+//trackScreen 
     public static void trackScreen()
     {
-        // This will clear the screen
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-
+        flushScreen();
         Scanner in = new Scanner(System.in);
-
-		// Current time with pm am
-	    Date currentDate = new Date();
-	    SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
-
-        float tempOz = 0.0f;
-        float tempAlc = 0.0f;
-
-        // every time this method is called it will add one to this variable
+        //variables
+	    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("hh:mm a"); 
+        LocalTime lt = getNearestHourQuarter(LocalTime.now());
+        float fluidRange = 0.0f;
+        float alcRange = 0.0f;
         numberOfDrinks++;
-
-        System.out.println("\tTracking Screen");
-        System.out.println("\t---------------");
-
-
 		// ::FLUID VOLUME
-        do
-        {
-            System.out.print("- Enter Fluid Volume(oz): ");
-            String fluidS = in.nextLine();
-
-            while(!fluidS.matches("[0-9]*.?[0-9]+"))
-            {
-                System.out.print("- Enter Fluid Volume(oz): ");
-                fluidS = in.nextLine();
-            }
-
-            float tempO = Float.parseFloat(fluidS);
-            if(tempO <= 0 || tempO > 128)
-            {
-                if(tempO <= 0)
-                {
-                    System.out.println("Please enter a valid number between 1 and 128!");
-                }
-                else
-                {
-                    System.out.println("Please enter a valid number between 1 and 128!");
-                }
-
-            }
-            tempOz = tempO;
-        }while( tempOz <= 0 || tempOz > 128);
-
-		// ::ALCOHOL %
-        do
+        flushScreen();	
+		do
         {
             
-            System.out.print("- Enter Alcohol %:  ");
-            String percentS = in.nextLine();
-
-            while(!percentS.matches("[0-9]*.?[0-9]+"))
-            {
-                System.out.print("- Enter Alcohol %:  ");
-                percentS = in.nextLine();
-            }
-
-            float tempA = Float.parseFloat(percentS);
-            if(tempA <= 0 || tempA > 100)
-            {
-                if(tempAlc <= 0)
+			System.out.print("- Enter Fluid Volume(oz): ");
+			String stringFluid = in.nextLine();
+			
+				while(!stringFluid.matches("[0-9]*.?[0-9]+")) 
+				{
+                    flushScreen();
+                     
+                    System.out.println("\t*Please enter a valid number between 0.1-128.*\n");
+					System.out.print("- Enter Fluid Volume(oz): ");
+					stringFluid = in.nextLine();
+				}
+			float userFluid=Float.parseFloat(stringFluid); 					
+                if(userFluid < 0.1 || userFluid > 128)
                 {
-                    System.out.println("Please enter a valid number between 1 and 100!");
-                }
-                else
+                    if(userFluid <= 0)
+                    {
+                        flushScreen();
+                        System.out.println("\t**Come-on! It is not possible to drink that little...**");
+                        System.out.println("\t*Please enter a valid number between 0.1 and 128!*\n");
+                    }
+                    else
+                    {
+                        flushScreen();
+                        System.out.println("\t**You need help! You drink over a gallon in one sitting??**");
+                        System.out.println("\t*Please enter a valid number between 0.1 and 128!*\n");
+                    }                                                 
+                }		              
+			fluidRange = userFluid;
+        }while(fluidRange < 0.1 || fluidRange > 128);  
+		// ::ALCOHOL%
+        flushScreen();	
+		do
+        { 
+			System.out.print("- Enter ABV(%): ");
+			String stringAlc = in.nextLine();
+			
+				while(!stringAlc.matches("[0-9]*.?[0-9]+")) 
+				{
+                    flushScreen();
+                     
+                    System.out.println("\t*Please enter a valid number between 0.1-100.*\n");
+					System.out.print("- Enter ABV(%): ");
+					stringAlc = in.nextLine();
+				}
+			float userAlc=Float.parseFloat(stringAlc); 						
+                if(userAlc < 0.1 || userAlc > 100)
                 {
-                    System.out.println("Please enter a valid number between 1 and 100!");
-                }
-            }
-            tempAlc = tempA;
-        }while(tempAlc <= 0 || tempAlc > 100);
-
-        // Clear screen
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-
-        // printScreen() confirmation
-        System.out.println("Drink #" + numberOfDrinks + " has been logged." + "\n\tVol: "  + tempOz +  "\n\tAlc: " + tempAlc + "\n\tTime: " + timeFormat.format(currentDate));
-        System.out.println("------------------------------------------------");
+                    if(userAlc < 0.1)
+                    {
+                        flushScreen();
+                        System.out.println("\t**You're drinking water...**");
+                        System.out.println("\t*Please enter a valid number between 0.1-100.*\n");  
+                    }
+                    else
+                    {
+                        flushScreen(); 
+                        System.out.println("\t**You must be drunk! No-way its over 100%!**");
+                        System.out.println("\t*Please enter a valid number between 0.1-100.*\n");                                                   
+                    }                                                 
+                }		                
+			alcRange = userAlc;
+        }while(alcRange < 0.1 || alcRange > 100);
+        //::trackScreen PRINT
+        flushScreen(); 
+        System.out.println("Drink #" + numberOfDrinks + " has been logged." + "\n\tVol: "  + fluidRange + "oz." +  "\n\tAlc: " + alcRange + "%" + "\n\tTime: " + dtf.format(lt) );
+        System.out.println("------------------------------------------------\n"); 
+        try 
+        {
+            Thread.sleep(3000);
+        } 
+        catch (InterruptedException e) 
+        {
+            Thread.currentThread().interrupt();
+        }
     }
-
-	// ::CALCSCREEN
+//calcScreen
     public static void calcScreen()
     {
-
-		// This will clear the screen
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-
+        flushScreen();         
+        //variables
         Scanner in = new Scanner(System.in);
-
-		Date currentDate = new Date();
-	    SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
-
-        int userAge = 0; 
-        int userWeight = 0;
-        float tempOz = 0.0f;
-        float tempAlc = 0.0f;
-
-        numberOfDrinks++;
-
-        System.out.println("\tTracking Screen");
-        System.out.println("\t---------------");
-
-        //userName - checks for A-Z, a-z input only
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("hh:mm a"); 
+        LocalTime lt = getNearestHourQuarter(LocalTime.now());
+        int feetRange = 0;
+		int inchesRange = 0;
+        int weightRange = 0;
+        int ageRange = 0;
+        float fluidRange = 0.0f;
+        float alcRange = 0.0f;
+        numberOfDrinks++;    
 		// ::NAME
-        System.out.println("- Enter your first name: ");
-        String userName = in.nextLine();
-        
-            while(!userName.matches("[a-zA-Z]+")) //TALK ABOUT THIS
+        System.out.print("- Enter your first name: ");
+        String userName = in.nextLine();      
+            while(!userName.matches("[a-zA-Z]+"))
             {
-                System.out.println("Please enter your first name only with no spaces.");
+                flushScreen();
+                 
+                System.out.println("\t*Please enter your first name only with no spaces.*\n");
+                System.out.print("- Enter your first name: ");
                 userName = in.nextLine();
             }
-
-        //userGender - checks for M,m,F,f user input only
 		// ::GENDER
-        System.out.println("- Enter your gender (M or F): ");
+        flushScreen();        
+        System.out.print("- Enter your gender (M or F): ");
         String userGender = in.nextLine();
-            while(!userGender.matches("[MmFf]+")) //NO COMMA
+            while(!userGender.matches("[MmFf]+")) 
             {
-                System.out.println("Please enter M or F!");
+                flushScreen();
+                 
+                System.out.println("\t*Please enter M or F!*\n");
+                System.out.print("- Enter your gender (M or F): ");
                 userGender = in.nextLine();    
             }
-
-        // ::AGE
-        do
+        // ::AGE 
+        flushScreen();             
+		do
         {
-            System.out.print("- Enter your age: ");
-            // this is like saying "while in.hasNextInt != true"
-            while(!in.hasNextInt())
-            {
-                System.out.println("Please enter a valid number between 21 and 110!");
-                System.out.print("- Enter your age: ");
-                in.next();
-            }
-
-            userAge = in.nextInt();
-            if(userAge < 21 || userAge > 110)
-            {
-                if(userAge < 21)
+            
+			System.out.print("- Enter your Age: ");
+			String stringAge = in.nextLine();
+			
+				while(!stringAge.matches("[0-9]+")) 
+				{
+                    flushScreen();
+                     
+                    System.out.println("\t*Please enter a valid number between 21-110.*\n");
+					System.out.print("- Enter your Age: ");
+					stringAge = in.nextLine();
+				}
+			int userAge=Integer.parseInt(stringAge); 						
+			    if(userAge < 21 || userAge > 110)
                 {
-                    System.out.println("SORRY, YOU MUST BE 21 OR OLDER.");
-                    System.exit(0);                    
-                    //System.out.println("Please enter a valid age between 21 and 110!");
-                }
-                else
+                    if(userAge < 21)
+                    {
+                        flushScreen();
+                        
+                        System.out.println("\t*SORRY, YOU MUST BE 21 OR OLDER.*\n");                                                   
+                    }
+                    if(userAge > 110)
+                    {       
+                        flushScreen();
+                        
+                        System.out.println("\t*Please enter a valid number between 21-110.*\n");                                                    
+                    }
+                }		                  
+			ageRange = userAge;
+        }while(ageRange < 21 || ageRange > 110);  
+        // ::HEIGHT	
+        flushScreen();         
+		do
+        {           
+			System.out.print("- Enter your Height(ft): ");
+			String stringFeet = in.nextLine();			
+				while(!stringFeet.matches("[0-9]+")) 
+				{
+                    flushScreen();
+                     
+                    System.out.println("\t*Please enter a valid number between 2-8.*\n");
+					System.out.print("- Enter your Height(ft): ");
+					stringFeet = in.nextLine();
+				}
+			int userFeet=Integer.parseInt(stringFeet); 						
+                if(userFeet < 2 || userFeet > 8)
                 {
-                    System.out.println("-_-");
-                    //System.out.println("Please enter a valid number between 21 and 110!");
-                }
-            }
-
-        }while(userAge < 21 || userAge > 110);  
-
+                    flushScreen();
+                    
+                    System.out.println("\t*Please enter a valid number between 2-8.*\n");                                                   
+                }		           
+			feetRange = userFeet;
+        }while(feetRange < 2 || feetRange > 8);  
+		flushScreen();          
+		do
+        {
+            
+			System.out.print("- Enter your Height(in): ");
+			String stringInches = in.nextLine();
+			
+				while(!stringInches.matches("[0-9]+")) 
+				{
+                    flushScreen();
+                     
+                    System.out.println("\t*Please enter a valid number between 0-11.*\n");
+					System.out.print("- Enter your Height(in): ");
+					stringInches = in.nextLine();
+				}
+			int userInches=Integer.parseInt(stringInches); 
+						
+                if(userInches < 0.1 || userInches > 11)
+                {
+                    flushScreen();
+                    
+                    System.out.println("\t*Please enter a valid number between 0-11.*\n");                                                   
+                }		                  
+			inchesRange = userInches;
+        }while(inchesRange < 0.1 || inchesRange > 11); 
 		// ::WEIGHT
-        do
-        {
-            System.out.print("- Enter your weight: ");
-            // this is like saying "while in.hasNextInt != true"
-            while(!in.hasNextInt())
-            {
-                System.out.println("Please enter a valid number between 80 and 400!");
-                System.out.print("- Enter your weight: ");
-                in.next();
-            }
-
-            userWeight = in.nextInt();
-
-            if(userWeight < 80 || userWeight > 400)
-            {
-                System.out.println("Please enter a valid number between 80 and 400!");
-            }
-
-        }while(userWeight < 80 || userWeight > 400);    
-
+        flushScreen();           
+		do
+        {           
+			System.out.print("- Enter your Weight(lbs): ");
+			String stringWeight = in.nextLine();
+			
+				while(!stringWeight.matches("[0-9]+")) 
+				{
+                    flushScreen();
+                     
+                    System.out.println("\t*Please enter a valid number between 80-400.*\n");
+					System.out.print("- Enter your Weight(lbs): ");
+					stringWeight = in.nextLine();
+				}
+			int userWeight=Integer.parseInt(stringWeight); 						
+                if(userWeight < 80 || userWeight > 400)
+                {
+                    flushScreen();
+                    
+                    System.out.println("\t*Please enter a valid number between 80-400.*\n");                                                   
+                }		               
+			weightRange = userWeight;
+        }while(weightRange < 80 || weightRange > 400);   
 		// ::FLUID VOLUME
-        do
+        flushScreen();	
+		do
         {
-            System.out.print("- Enter Fluid Volume: ");
-            // this is like saying "while in.hasNextFloat != true"
-            while(!in.hasNextFloat())
-            {
-                System.out.println("Please enter a valid number between 1 and 128!");
-                System.out.print("- Enter Fluid Volume: ");
-                in.next();
-            }
-
-            tempOz = in.nextFloat();
-            if(tempOz <= 0 || tempOz > 128)
-            {
-                if(tempOz <= 0)
+            
+			System.out.print("- Enter Fluid Volume(oz): ");
+			String stringFluid = in.nextLine();
+			
+				while(!stringFluid.matches("[0-9]*.?[0-9]+")) 
+				{
+                    flushScreen();
+                     
+                    System.out.println("\t*Please enter a valid number between 0.1-128.*\n");
+					System.out.print("- Enter Fluid Volume(oz): ");
+					stringFluid = in.nextLine();
+				}
+			float userFluid=Float.parseFloat(stringFluid); 					
+                if(userFluid < 0.1 || userFluid > 128)
                 {
-                    System.out.println("**Come-on! It is not possible to drink that little...**");
-                    System.out.println("Please enter a valid number between 1 and 128!");
-                }
-                else
+                    if(userFluid <= 0)
+                    {
+                        flushScreen();
+                        System.out.println("\t**Come-on! It is not possible to drink that little...**");
+                        System.out.println("\t*Please enter a valid number between 0.1 and 128!*\n");
+                    }
+                    else
+                    {
+                        flushScreen();
+                        System.out.println("\t**You need help! You drink over a gallon in one sitting??**");
+                        System.out.println("\t*Please enter a valid number between 0.1 and 128!*\n");
+                    }                                                 
+                }		              
+			fluidRange = userFluid;
+        }while(fluidRange < 0.1 || fluidRange > 128);  
+		// ::ALCOHOL%
+        flushScreen();	
+		do
+        { 
+			System.out.print("- Enter ABV(%): ");
+			String stringAlc = in.nextLine();
+			
+				while(!stringAlc.matches("[0-9]*.?[0-9]+")) 
+				{
+                    flushScreen();
+                     
+                    System.out.println("\t*Please enter a valid number between 0.1-100.*\n");
+					System.out.print("- Enter ABV(%): ");
+					stringAlc = in.nextLine();
+				}
+			float userAlc=Float.parseFloat(stringAlc); 						
+                if(userAlc < 0.1 || userAlc > 100)
                 {
-                    System.out.println("**You need help! You drink over a gallon in one sitting??**");
-                    System.out.println("Please enter a valid number between 1 and 128!");
-                }
-            }
-
-        }while(tempOz <= 0 || tempOz > 128);
-
-		// ::ALCOHOL %
-        do
-        {
-            System.out.print("- Enter Alcohol %:  ");
-            // this is like saying "while in.hasNextFloat != true"
-            while(!in.hasNextFloat())
-            {
-                System.out.println("Please enter a valid number between 1 and 100!");
-                System.out.print("- Enter Alcohol: ");
-                in.next();
-            }
-
-            tempAlc = in.nextFloat();
-            if(tempAlc <= 0 || tempAlc > 100)
-            {
-                if(tempAlc <= 0)
-                {
-                    System.out.println("**You're drinking water...**");
-                    System.out.println("Please enter a valid number between 1 and 100!");
-                }
-                else
-                {
-                    System.out.println("**You must be drunk! No-way its over 100%!**");
-                    System.out.println("Please enter a valid number between 1 and 100!");
-                }
-            }
-
-        }while(tempAlc <= 0 || tempAlc > 100);
-
-        // This will clear the screen
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-        
-        // print confirmation
-        System.out.println("Drink #" + numberOfDrinks + " has been logged." + "\n\tVol: "  + tempOz +  "\n\tAlc: " + tempAlc + "\n\tTime: " + timeFormat.format(currentDate) );
+                    if(userAlc < 0.1)
+                    {
+                        flushScreen();
+                        System.out.println("\t**You're drinking water...**");
+                        System.out.println("\t*Please enter a valid number between 0.1-100.*\n");  
+                    }
+                    else
+                    {
+                        flushScreen(); 
+                        System.out.println("\t**You must be drunk! No-way its over 100%!**");
+                        System.out.println("\t*Please enter a valid number between 0.1-100.*\n");                                                   
+                    }                                                 
+                }		                
+			alcRange = userAlc;
+        }while(alcRange < 0.1 || alcRange > 100);   
+        //calcScreen PRINT
+        flushScreen();  
+        System.out.println("Drink #" + numberOfDrinks + " has been logged." + "\n\tVol: "  + fluidRange + "oz." +  "\n\tAlc: " + alcRange + "%" + "\n\tTime: " + dtf.format(lt) );
         System.out.println("------------------------------------------------");
         System.out.println( "Estimated BAC for " + userName + " is: TBA");
-        System.out.println("------------------------------------------------");
+        System.out.println("------------------------------------------------\n");
+        try 
+        {
+            Thread.sleep(3000);
+        } 
+        catch (InterruptedException e) 
+        {
+            Thread.currentThread().interrupt();
+        }
     }
-
 }
