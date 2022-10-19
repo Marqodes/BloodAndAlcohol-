@@ -9,9 +9,6 @@
                     cleaned up console with lots of flushes, timer for when logged, added timer to nearest quarter
 */
 import java.util.Scanner;
-import java.util.jar.Attributes.Name;
-import java.util.Date;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.*;
 import java.time.temporal.*;

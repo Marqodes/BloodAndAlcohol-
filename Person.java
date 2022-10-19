@@ -14,9 +14,6 @@ public class Person
     /*
      * These are all the setter methods for our instance variables
      */
-
-
-
     public void setName()
     {
 
@@ -41,7 +38,6 @@ public class Person
     {
         drinkCount++;
     }
-
 
 
     /*
