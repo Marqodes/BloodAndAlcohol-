@@ -151,7 +151,8 @@ public class InputVal
         return num;
     }
 
-    public static void readName()
+    // MQv changed it from static to String
+    public static String readName()
     {
         String promptMsg = NAME_MSG;
         String errorMsg = NAME_ERROR;
@@ -164,9 +165,12 @@ public class InputVal
             System.out.print(promptMsg);
             input = in.nextLine();
         }
+
+        return input;
     }
 
-    public static void readGender()
+    // MQv changed it from static to char
+    public static char readGender()
     {
         String promptMsg = GENDER_MSG;
         String errorMsg = GENDER_ERROR;
@@ -179,6 +183,8 @@ public class InputVal
             System.out.print(promptMsg);
             input = in.nextLine();
         }
+
+        return input.charAt(0);
     }
 
 
