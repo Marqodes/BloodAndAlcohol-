@@ -3,7 +3,7 @@ public class Person
 {
     private String name;
     private int age;
-    private int weight;
+    private float weight;
     private int[] height = new int[2];
     private char gender;
     private int drinkCount = 0;
@@ -16,23 +16,25 @@ public class Person
      */
     public void setName()
     {
-
+        name = InputVal.readName();
     }
     public void setAge()
     {
-
+        age = InputVal.readInteger(3, 21, 100);
     }
     public void setWeight()
     {
-
+        weight = InputVal.readFloat(2, 80, 400);
     }
     public void setHeight()
     {
-
+        // height[0] = feet | height[1] = inches
+        height[0] = InputVal.readInteger(4, 2, 8);
+        height[1] = InputVal.readInteger(5, 0, 11);
     }
     public void setGender()
     {
-
+        gender = InputVal.readGender();
     }
     public void increaseDrinkCounter()
     {
@@ -51,7 +53,7 @@ public class Person
     {
         return age;
     }
-    public int getWeight()
+    public float getWeight()
     {
         return weight;
     }
